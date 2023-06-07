@@ -7,6 +7,6 @@ class PermissionModel(Base):
     __tablename__ = 'permission'
 
     permission_id = Column(String(45), primary_key=True, default=lambda: str(uuid.uuid4()))
-    action = Column(String(5), nullable=False)
+    action = Column(String(10), nullable=False)
     resource = Column(String(50), nullable=False)
 

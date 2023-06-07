@@ -3,6 +3,11 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from domains.authentication.models.permission_model import PermissionModel
 from domains.authentication.models.position_permission_model import PositionPermissionModel
+from sqlalchemy.orm import Session
+from repository import get_db
+from domains.authentication.models.user_position_model import UserPositionModel
+from domains.authentication.models.position_model import PositionModel
+import uuid
 
 Base = declarative_base()
 
@@ -43,3 +48,26 @@ class UserModel(Base):
 
         return False
 
+    def get_permissions(self, session) -> list:
+        from domains.authentication.models.user_position_model import UserPositionModel
+        from domains.authentication.models.position_permission_model import PositionPermissionModel
+        from domains.authentication.models.permission_model import PermissionModel
+
+        # Get all user positions
+        user_positions = session.query(UserPositionModel).filter_by(user_id=self.user_id).all()
+
+        permissions = []
+        # Iterate over each user position
+        for user_position in user_positions:
+            # Get position permissions
+            position_permissions = session.query(PositionPermissionModel).filter_by(
+                position_id=user_position.position_id).all()
+
+            # Iterate over each position permission
+            for position_permission in position_permissions:
+                permission = session.query(PermissionModel).filter_by(
+                    permission_id=position_permission.permission_id).first()
+                # Add the permission to the list
+                permissions.append(permission)
+
+        return permissions

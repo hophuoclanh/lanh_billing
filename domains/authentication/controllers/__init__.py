@@ -13,7 +13,9 @@ from domains.authentication.jwt import create_access_token
 from domains.authentication.models.user_model import UserModel
 from domains.authentication.schemas.authentication_schema import LoginResponseSchema
 from domains.authentication.schemas.user_schema import UserSchema
-from dependencies.get_db import get_db  # You should use the get_db function from dependencies
+from domains.authentication.schemas.permission_schema import PermissionResponseSchema
+from dependencies.get_permission_for_position import get_permissions_for_position
+from repository import get_db  # You should use the get_db function from dependencies
 
 router = APIRouter(tags=['Authentication'])
 router.include_router(user_controller, prefix='/user')
@@ -38,3 +40,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.get('/me', response_model=UserSchema)
 def get_me(current_user: UserModel = Depends(get_current_user)) -> UserSchema:  # Changed UserSchema to UserModel
     return current_user
+
+@router.get("/position/{position_id}/permissions")
+def read_position_permissions(position_id: str, db: Session = Depends(get_db)) -> list[PermissionResponseSchema]:
+    permissions = get_permissions_for_position(db, position_id)
+    return [PermissionResponseSchema.from_orm(permission) for permission in permissions]
+
+

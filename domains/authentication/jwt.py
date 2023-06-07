@@ -30,3 +30,4 @@ def validate_access_token(access_token: str) -> UserModel:
     except JWTError as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Token is invalid')
+

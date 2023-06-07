@@ -8,4 +8,3 @@ class PositionModel(Base):
 
     position_id = Column(String(45), primary_key=True)
     role = Column(String(45), nullable=False)
-

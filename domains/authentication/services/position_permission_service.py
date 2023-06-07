@@ -4,6 +4,7 @@ from domains.authentication.models.position_permission_model import PositionPerm
 from fastapi import HTTPException
 from domains.authentication.models.position_model import PositionModel
 from domains.authentication.models.permission_model import PermissionModel
+from sqlalchemy.exc import IntegrityError
 
 def get_position_permission_by_id(position_permission_id: str, db: Session) -> PositionPermissionSchema:
     position_permission = db.query(PositionPermissionModel).filter(PositionPermissionModel.position_permission_id == position_permission_id).first()
@@ -43,11 +44,12 @@ def create_position_permission(position_permission: CreatePositionPermissionSche
         db.add(position_permission_db)
         db.commit()
         db.refresh(position_permission_db)
-    except:
+    except IntegrityError as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Error creating Position Permission")
-    finally:
-        db.close()
+        raise HTTPException(status_code=400, detail=f"Database error: {str(e.orig)}")
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Unexpected error: {str(e)}")
     return PositionPermissionSchema.from_orm(position_permission_db)
 
 def update_position_permission(position_permission_id: str, position_permission: CreatePositionPermissionSchema,
@@ -81,9 +83,12 @@ def update_position_permission(position_permission_id: str, position_permission:
     try:
         db.commit()
         db.refresh(position_permission_db)
-    except:
+    except IntegrityError as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Error updating Position Permission")
+        raise HTTPException(status_code=400, detail=f"Database error: {str(e.orig)}")
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Unexpected error: {str(e)}")
     finally:
         db.close()
     return PositionPermissionSchema.from_orm(position_permission_db)

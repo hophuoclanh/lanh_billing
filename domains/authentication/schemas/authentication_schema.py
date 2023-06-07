@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class LoginSchema(BaseModel):
-    user_name: str
+    username: str
     password: str
 
 class LoginResponseSchema(BaseModel):

@@ -23,13 +23,15 @@ parser.add_argument("--password", required=True, help="Password")
 args = parser.parse_args()
 
 def main():
-    create_user(CreateUserRequestSchema(
+    created_user_response = create_user(CreateUserRequestSchema(
         user_name=args.user_name,
         email=args.email,
         phone=args.phone,
         address=args.address,
         password=args.password
     ))
+    print(f"Created user with ID: {created_user_response.user_id}")
 
 if __name__ == '__main__':
     main()
+

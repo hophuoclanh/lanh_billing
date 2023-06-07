@@ -67,7 +67,6 @@ def update_user(user_id: str, updated_user: UpdateUserSchema) -> None:
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=500, detail='Error occurred during user update')
-
 def delete_user(user_id: str) -> None:
     user = session.query(UserModel).filter(UserModel.user_id == user_id).first()
     if not user:

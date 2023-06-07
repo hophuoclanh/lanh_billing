@@ -66,8 +66,7 @@ def delete_user_position(user_position_id: str) -> None:
         raise e
 
 def update_user_position(user_position_id: str, updated_user_position: UpdateUserPositionSchema, db: Session) -> None:
-    try:
-        # Check if the user and position exist
+    try:# Check if the user and position exist
         user = get_user_by_id(updated_user_position.user_id, db)
         position = get_position_by_id(updated_user_position.position_id, db)
 

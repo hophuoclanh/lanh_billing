@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
 from fastapi import HTTPException
-
 from domains.authentication.models.permission_model import PermissionModel
 from domains.authentication.schemas.permission_schema import CreatePermissionSchema, PermissionResponseSchema
 
@@ -20,8 +19,11 @@ def create_permission(permission: CreatePermissionSchema, db: Session) -> Permis
         PermissionModel.resource == db_permission.resource
     ).first()
 
+    print("Existing permission:", existing_permission)  # Print the existing permission
+
     if existing_permission:
-        raise HTTPException(status_code=400, detail="Permission already exists.")
+        print("Raising exception for existing permission...")  # Print a statement before raising the exception
+        raise HTTPException(status_code=400, detail="Permission already exists")
 
     db.add(db_permission)
     try:
@@ -31,6 +33,7 @@ def create_permission(permission: CreatePermissionSchema, db: Session) -> Permis
         db.rollback()
         raise HTTPException(status_code=400, detail="Error occurred during creation of Permission.")
     return PermissionResponseSchema(**db_permission.__dict__)
+
 
 def update_permission(permission_id: str, permission: CreatePermissionSchema, db: Session) -> PermissionResponseSchema:
     db_permission = db.query(PermissionModel).filter(PermissionModel.permission_id == permission_id).first()
