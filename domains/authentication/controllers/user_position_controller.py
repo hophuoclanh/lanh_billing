@@ -7,6 +7,7 @@ from domains.authentication.models.user_model import UserModel
 from domains.authentication.schemas.update_user_position_schema import UpdateUserPositionSchema
 from sqlalchemy.orm import Session
 from repository import get_db
+from typing import List
 
 router = APIRouter()
 
@@ -30,20 +31,20 @@ def get_user_position_by_id(
         raise HTTPException(status_code=403, detail="User does not have permission to get a user position")
     return user_position_service.get_user_position_by_id(user_position_id)
 
-@router.post('', response_model=UserPositionSchema)
+@router.post('', response_model=List[UserPositionSchema])
 def create_user_position(
     user_position: CreateUserPositionRequestSchema,
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
-) -> UserPositionSchema:
+) -> List[UserPositionSchema]:
     if not current_user.has_permission(db, 'create', 'user_position'):
         raise HTTPException(status_code=403, detail="User does not have permission to create a user position")
     try:
-        created_user_position = user_position_service.create_user_position(user_position, db)
+        created_user_positions = user_position_service.create_user_position(user_position, db)
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
-    return created_user_position
+    return created_user_positions
 
 @router.put('/{user_position_id}')
 def update_user_position(

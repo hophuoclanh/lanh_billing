@@ -14,5 +14,5 @@ openssl rand -hex 32
 
 ``` bash
 python .\tools\create_super_user.py --user_name hothienlac --email hothienlac@gmail.com --phone 0987654321 --address qwe.rty --password 123
-python .\tools\create_super_user_position.py --user_id 8f02b25c-2477-4ae9-a68a-d86d7e414e0f --
+python .\tools\create_super_user_position.py --user_id --role admin
 ```

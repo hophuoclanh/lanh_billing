@@ -27,7 +27,7 @@ def get_user_by_id(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ) -> UserSchema:
-    if not current_user.has_permission(db, "get", "user_by-id"):
+    if not current_user.has_permission(db, "get", "user_by_id"):
         raise HTTPException(status_code=403, detail="Permission denied")
     return user_service.get_user_by_id(user_id)
 
