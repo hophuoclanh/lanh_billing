@@ -23,6 +23,7 @@ def get_order_detail_by_id(order_detail_id: str, db: Session) -> OrderDetailMode
 def create_order_detail(order_detail: CreateOrderDetailRequestSchema, db: Session) -> OrderDetailResponseSchema:
     order_detail_dict = order_detail.dict()
     order_detail_dict['order_detail_id'] = str(uuid.uuid4())
+    order_detail_dict['total_amount_per_product'] = order_detail_dict['price_per_unit'] * order_detail_dict['quantity']
     order_detail = OrderDetailModel(**order_detail_dict)
     db.add(order_detail)
 
@@ -42,6 +43,7 @@ def create_order_detail(order_detail: CreateOrderDetailRequestSchema, db: Sessio
         db.rollback()
         raise HTTPException(status_code=400, detail="Error occurred during creation of OrderDetail.")
     return OrderDetailResponseSchema.from_orm(order_detail)
+
 
 def update_order_detail(order_detail_id: str, updated_order_detail: UpdateOrderDetailRequestSchema, db: Session) -> OrderDetailResponseSchema:
     order_detail = db.query(OrderDetailModel).filter(OrderDetailModel.order_detail_id == order_detail_id).first()

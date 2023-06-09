@@ -55,7 +55,7 @@ def update_user_position(
 ) -> None:
     if not current_user.has_permission(db, 'update', 'user_position'):
         raise HTTPException(status_code=403, detail="User does not have permission to update a user position")
-    user_position_service.update_user_position(user_position_id, updated_user_position)
+    user_position_service.update_user_position(user_position_id, updated_user_position, db)
 
 @router.delete('/{user_position_id}')
 def delete_user_position(

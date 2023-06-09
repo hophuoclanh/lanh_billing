@@ -13,8 +13,8 @@ from sqlalchemy.orm import Session
 def get_all_orders(db: Session) -> list[OrderModel]:
     return db.query(OrderModel).all()
 
-def get_order_by_id(order_id: str) -> OrderModel:
-    order = session.query(OrderModel).filter(OrderModel.order_id == order_id).first()
+def get_order_by_id(order_id: str, db: Session) -> OrderModel:
+    order = db.query(OrderModel).filter(OrderModel.order_id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail='Order not found')
     return OrderResponseSchema.from_orm(order)

@@ -38,7 +38,7 @@ def get_order_detail_by_id(
 ):
     if not current_user.has_permission(db, 'get', 'order_detail'):
         raise HTTPException(status_code=403, detail="User does not have permission to get an order detail")
-    db_order_detail = godbi(order_detail_id=order_detail_id)
+    db_order_detail = godbi(order_detail_id=order_detail_id, db=db)
     if db_order_detail is None:
         raise HTTPException(status_code=404, detail="Order detail not found")
     return db_order_detail
@@ -62,7 +62,7 @@ def update_order_detail(
 ):
     if not current_user.has_permission(db, 'update', 'order_detail'):
         raise HTTPException(status_code=403, detail="User does not have permission to update an order detail")
-    updated_order_detail = uod(order_detail_id=order_detail_id, updated_order_detail=order_detail)
+    updated_order_detail = uod(order_detail_id=order_detail_id, updated_order_detail=order_detail, db=db)
     if updated_order_detail is None:
         raise HTTPException(status_code=404, detail="Order detail not found")
     return updated_order_detail

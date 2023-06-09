@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 class OrderModel(Base):
-    __tablename__ = 'order'
+    __tablename__ = 'orders'
 
     order_id = Column(String(45), primary_key=True)
     user_id = Column(String(45), nullable=False)

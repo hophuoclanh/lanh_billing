@@ -39,7 +39,7 @@ def get_order_by_id(
 ):
     if not current_user.has_permission(db, 'get', 'order_by_id'):
         raise HTTPException(status_code=403, detail="User does not have permission to get an order")
-    db_order = gobi(order_id=order_id)
+    db_order = gobi(order_id=order_id, db=db)
     if db_order is None:
         raise HTTPException(status_code=404, detail="Order not found")
     return db_order

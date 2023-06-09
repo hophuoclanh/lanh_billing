@@ -58,11 +58,11 @@ def create_user_position(user_position: CreateUserPositionRequestSchema, db: Ses
             new_user_position.user_position_id = str(uuid.uuid4())
 
             db.add(new_user_position)
-            db.commit()
-            db.refresh(new_user_position)
 
             # Add the created user position to the list
             created_positions.append(CreateUserPositionResponseSchema.from_orm(new_user_position))
+
+        db.commit()  # commit only once at the end
 
     except IntegrityError:
         db.rollback()
@@ -73,7 +73,6 @@ def create_user_position(user_position: CreateUserPositionRequestSchema, db: Ses
 
     # Return the list of created user positions
     return created_positions
-
 
 def delete_user_position(user_position_id: str) -> None:
     user_position = get_user_position_by_id(user_position_id)
